@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.9)
+set(CMAKE_CXX_STANDARD 11)
+project(demo LANGUAGES CXX)
+find_package(aws-lambda-runtime)
+find_package(AWSSDK COMPONENTS s3)
+find_package(ZLIB)
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+# file(COPY ${CMAKE_SOURCE_DIR}/resource/ DESTINATION ${PROJECT_BINARY_DIR}/resource/)
+# add_definitions(-DRESOURCE_DIR="${PROJECT_BINARY_DIR}/resource/")
+add_executable(${PROJECT_NAME} "main.cpp")
+target_link_libraries(${PROJECT_NAME} PRIVATE AWS::aws-lambda-runtime ${AWSSDK_LINK_LIBRARIES} ${OpenCV_LIBS})
+target_compile_features(${PROJECT_NAME} PRIVATE "cxx_std_11")
+target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-Wextra")
+
+# this line creates a target that packages your binary and zips it up
+aws_lambda_package_target(${PROJECT_NAME})
